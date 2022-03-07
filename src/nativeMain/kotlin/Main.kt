@@ -40,30 +40,6 @@ fun main() {
                 }
             }
             routing {
-                post("/") {
-                    println(call.request.headers.toMap())
-                    try {
-                        val rawParams = call.receiveText()
-                        val params = Json.decodeFromString<JsonObject>(rawParams).convertJson()
-                        val renderer = KoTeRenderer {
-                            mapOf(
-                                kote,
-                            )
-                        }
-                        println("<3426793f> $params")
-                        val result = renderer.render(
-                            template = """
-                            {{ params }}
-                        """.trimIndent(),
-                            resources = null,
-                            data = mapOf("params" to params)
-                        ).getValueOrNull()
-                            ?: "No answer :("
-                        call.respondText(result)
-                    } catch (e: Throwable) {
-                        call.respondText(e.asHtml())
-                    }
-                }
                 get("/") {
                     val params = call.parameters.entries().associate { it.key to it.value }
                     val renderer = KoTeRenderer {
@@ -117,6 +93,30 @@ fun main() {
                 }
                 get("/error") {
                     throw RuntimeException("<417cf101> Error")
+                }
+                post("/") {
+                    println(call.request.headers.toMap())
+                    try {
+                        val rawParams = call.receiveText()
+                        val params = Json.decodeFromString<JsonObject>(rawParams).convertJson()
+                        val renderer = KoTeRenderer {
+                            mapOf(
+                                kote,
+                            )
+                        }
+                        println("<3426793f> $params")
+                        val result = renderer.render(
+                            template = """
+                            {{ params }}
+                        """.trimIndent(),
+                            resources = null,
+                            data = mapOf("params" to params)
+                        ).getValueOrNull()
+                            ?: "No answer :("
+                        call.respondText(result)
+                    } catch (e: Throwable) {
+                        call.respondText(e.asHtml())
+                    }
                 }
             }
         }.start(wait = true).addShutdownHook {
