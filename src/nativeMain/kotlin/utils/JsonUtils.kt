@@ -1,4 +1,4 @@
-package dev.limebeck.json
+package dev.limebeck.utils.json
 
 import kotlinx.serialization.json.*
 
