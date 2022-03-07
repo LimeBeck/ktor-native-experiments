@@ -14,9 +14,9 @@
 | ktor-server-call-logging        |      -       |
 | ktor-server-compression         |      -       |
 | ktor-server-conditional-headers |      +       |
-| ktor-server-content-negotiation |      +       |
+| ktor-server-content-negotiation |      -       |
 | ktor-server-cors                |      +       |
-| ktor-server-data-conversion     |      +       |
+| ktor-server-data-conversion     |      -       |
 | ktor-server-default-headers     |      -       |
 | ktor-server-double-receive      |      +       |
 | ktor-server-forwarded-header    |      +       |

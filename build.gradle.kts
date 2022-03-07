@@ -3,7 +3,7 @@ val kotlin_version: String by project
 
 plugins {
     application
-    kotlin("multiplatform") version "1.6.0"
+    kotlin("multiplatform") version "1.6.20-RC"
 }
 
 application {
@@ -16,7 +16,7 @@ repositories {
     mavenLocal()
     mavenCentral()
     maven { url = uri("https://maven.pkg.jetbrains.space/public/p/ktor/eap") }
-//    maven {
+//    maven { //Provide your git credentials here to access library
 //        url = uri("https://maven.pkg.github.com/LimeBeck/ko-te")
 //        credentials {
 //            username = "limebeck"
@@ -50,6 +50,15 @@ kotlin {
                 implementation("io.ktor:ktor-server-resources:$ktor_version")
                 implementation("io.ktor:ktor-server-status-pages:$ktor_version")
                 implementation("io.ktor:ktor-server-cio:$ktor_version")
+                //implementation("io.ktor:ktor-server-content-negotiation:$ktor_version")
+                //implementation("io.ktor:ktor-server-data-conversion:$ktor_version")
+                implementation("io.ktor:ktor-serialization-kotlinx-json:$ktor_version")
+                implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core"){
+                    version {
+                        strictly("1.5.2-native-mt")
+                    }
+                }
+                implementation("com.benasher44:uuid:0.4.0")
             }
         }
         val nativeTest by getting {
