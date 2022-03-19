@@ -41,3 +41,8 @@ fun tickerFlow(period: Duration, initialDelay: Duration = Duration.ZERO) = flow 
         delay(period)
     }
 }
+
+fun <T, R> Collection<T>.allSame(block: (T) -> R): Boolean {
+    if (size <= 1) return true
+    return all { block(first()) == block(it) }
+}

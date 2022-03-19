@@ -11,6 +11,7 @@ application {
 }
 
 val kotlinCoroutinesVersion: String by project
+val okioVersion: String by project
 
 repositories {
     mavenLocal()
@@ -45,6 +46,7 @@ kotlin {
     sourceSets {
         val nativeMain by getting {
             dependencies {
+                implementation("com.squareup.okio:okio:$okioVersion")
                 implementation("dev.limebeck:ko-te:1.0-SNAPSHOT")
                 implementation("io.ktor:ktor-server-core:$ktor_version")
                 implementation("io.ktor:ktor-server-resources:$ktor_version")
@@ -55,7 +57,7 @@ kotlin {
                 implementation("io.ktor:ktor-serialization-kotlinx-json:$ktor_version")
                 implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core"){
                     version {
-                        strictly("1.5.2-native-mt")
+                        strictly(kotlinCoroutinesVersion)
                     }
                 }
                 implementation("com.benasher44:uuid:0.4.0")

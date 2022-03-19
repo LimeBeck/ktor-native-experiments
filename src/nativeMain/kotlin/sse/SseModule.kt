@@ -10,6 +10,7 @@ import dev.limebeck.utils.asHtml
 import dev.limebeck.utils.tickerFlow
 import io.ktor.http.*
 import io.ktor.server.application.*
+import io.ktor.server.resources.*
 import io.ktor.server.response.*
 import io.ktor.server.routing.*
 import kotlinx.atomicfu.atomic
