@@ -48,7 +48,7 @@ class FilesWatcher(
         "$cookie ${EventType.fromCode(mask)} ${if (isDir) "DIR" else ""} ${name.toKStringFromUtf8()}"
 
     private fun debug(block: () -> Unit) {
-        if(isDebug){
+        if (isDebug) {
             block()
         }
     }
@@ -96,84 +96,98 @@ class FilesWatcher(
                     }.fold(mutableMapOf<UInt, List<EventInternal>>()) { acc, event ->
                         acc[event.cookie] = (acc[event.cookie] ?: listOf()) + listOf(event)
                         acc
-                    }.mapNotNull {
+                    }.flatMap {
                         val events = it.value
-                        when (events.size) {
+                        val processedEvents = when (events.size) {
                             2 -> {
                                 when {
                                     events.all { it.type in listOf(EventType.MOVED_FROM, EventType.MOVED_TO) } -> {
                                         val from = events.find { it.type == EventType.MOVED_FROM }!!
                                         val to = events.find { it.type == EventType.MOVED_TO }!!
-                                        FileChangeEvent.MovedInside(
-                                            filepath = to.path,
-                                            oldFilePath = from.path,
-                                            isDir = to.isDir,
+                                        listOf(
+                                            FileChangeEvent.MovedInside(
+                                                filepath = to.path,
+                                                oldFilePath = from.path,
+                                                isDir = to.isDir,
+                                            )
                                         )
                                     }
+
                                     events.allSame { it.type } && events.allSame { it.path } -> {
                                         val event = events.first()
-                                        when (event.type) {
-                                            EventType.CREATED -> FileChangeEvent.Created(
-                                                filepath = event.path,
-                                                isDir = event.isDir
-                                            )
-                                            EventType.UPDATED -> FileChangeEvent.Updated(
-                                                filepath = event.path,
-                                                isDir = event.isDir
-                                            )
-                                            EventType.DELETED -> FileChangeEvent.Deleted(
-                                                filepath = event.path,
-                                                isDir = event.isDir
-                                            )
-                                            EventType.MOVED_FROM -> FileChangeEvent.MovedFrom(
-                                                filepath = event.path,
-                                                isDir = event.isDir
-                                            )
-                                            EventType.MOVED_TO -> FileChangeEvent.MovedTo(
-                                                filepath = event.path,
-                                                isDir = event.isDir
-                                            )
-                                        }
+                                        listOf(
+                                            when (event.type) {
+                                                EventType.CREATED -> FileChangeEvent.Created(
+                                                    filepath = event.path,
+                                                    isDir = event.isDir
+                                                )
+
+                                                EventType.UPDATED -> FileChangeEvent.Updated(
+                                                    filepath = event.path,
+                                                    isDir = event.isDir
+                                                )
+
+                                                EventType.DELETED -> FileChangeEvent.Deleted(
+                                                    filepath = event.path,
+                                                    isDir = event.isDir
+                                                )
+
+                                                EventType.MOVED_FROM -> FileChangeEvent.MovedFrom(
+                                                    filepath = event.path,
+                                                    isDir = event.isDir
+                                                )
+
+                                                EventType.MOVED_TO -> FileChangeEvent.MovedTo(
+                                                    filepath = event.path,
+                                                    isDir = event.isDir
+                                                )
+                                            }
+                                        )
                                     }
-                                    else -> {
-                                        println(events)
-                                        throw RuntimeException("<532e03d8>")
-                                    } //TODO Own exception
+
+                                    else -> events.map { singleEventToExternal(it) }
                                 }
                             }
+
                             1 -> {
                                 val event = events.first()
-                                when (event.type) {
-                                    EventType.CREATED -> FileChangeEvent.Created(
-                                        filepath = event.path,
-                                        isDir = event.isDir
-                                    )
-                                    EventType.UPDATED -> FileChangeEvent.Updated(
-                                        filepath = event.path,
-                                        isDir = event.isDir
-                                    )
-                                    EventType.DELETED -> FileChangeEvent.Deleted(
-                                        filepath = event.path,
-                                        isDir = event.isDir
-                                    )
-                                    EventType.MOVED_FROM -> FileChangeEvent.MovedFrom(
-                                        filepath = event.path,
-                                        isDir = event.isDir
-                                    )
-                                    EventType.MOVED_TO -> FileChangeEvent.MovedTo(
-                                        filepath = event.path,
-                                        isDir = event.isDir
-                                    )
-                                }
+                                listOf(singleEventToExternal(event))
                             }
-                            else -> {
-                                null
-                            }
+
+                            else -> events.map { singleEventToExternal(it) }
                         }
+                        processedEvents
                     }
                     events.forEach { channel.emit(it) }
                 }
             }
         }
+    }
+
+    private fun singleEventToExternal(event: EventInternal) = when (event.type) {
+        EventType.CREATED -> FileChangeEvent.Created(
+            filepath = event.path,
+            isDir = event.isDir
+        )
+
+        EventType.UPDATED -> FileChangeEvent.Updated(
+            filepath = event.path,
+            isDir = event.isDir
+        )
+
+        EventType.DELETED -> FileChangeEvent.Deleted(
+            filepath = event.path,
+            isDir = event.isDir
+        )
+
+        EventType.MOVED_FROM -> FileChangeEvent.MovedFrom(
+            filepath = event.path,
+            isDir = event.isDir
+        )
+
+        EventType.MOVED_TO -> FileChangeEvent.MovedTo(
+            filepath = event.path,
+            isDir = event.isDir
+        )
     }
 }

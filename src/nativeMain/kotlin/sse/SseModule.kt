@@ -37,7 +37,6 @@ fun Application.sseModule() {
                 template = """
                     {{ params }}
                 """.trimIndent(),
-                resources = null,
                 data = mapOf("params" to params)
             ).getValueOrNull() ?: "No answer :("
             call.respondText(result.appendSseReloadScript(), contentType = ContentType.Text.Html)

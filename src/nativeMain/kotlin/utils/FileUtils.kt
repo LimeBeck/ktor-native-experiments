@@ -3,6 +3,9 @@ package utils
 import kotlinx.cinterop.memScoped
 import kotlinx.cinterop.pointed
 import kotlinx.cinterop.toKStringFromUtf8
+import okio.FileSystem
+import okio.Path
+import okio.Path.Companion.toPath
 import platform.posix.closedir
 import platform.posix.opendir
 import platform.posix.readdir
@@ -37,4 +40,8 @@ fun listDir(path: String): List<File> {
 fun listDirRecursively(path: String): List<File> {
     val dirs = listDir(path).filter { it.name !in listOf(".", "..") }
     return dirs + dirs.filter { it.isDir }.flatMap { listDirRecursively(it.path) }
+}
+
+fun readFileToString(path: Path) = FileSystem.SYSTEM.read(path) {
+    readUtf8()
 }

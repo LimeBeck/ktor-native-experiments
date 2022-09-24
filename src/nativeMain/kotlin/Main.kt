@@ -3,10 +3,11 @@ import io.ktor.http.*
 import io.ktor.server.application.*
 import io.ktor.server.cio.*
 import io.ktor.server.engine.*
-import io.ktor.server.plugins.*
+import io.ktor.server.plugins.statuspages.*
 import io.ktor.server.response.*
 import kotlinx.cinterop.staticCFunction
 import platform.posix.SIGPIPE
+import platform.posix.SIGTERM
 import platform.posix.signal
 import sse.sseModule
 import templating.templatingModule
@@ -25,9 +26,13 @@ fun main() {
                 )
             }
         }
-        sseModule()
+//        sseModule()
         templatingModule()
-    }.start(wait = true).addShutdownHook {
+    }.start(wait = true).apply {
+//        signal(SIGTERM, staticCFunction<Int, Unit> {
+//            stop()
+//        })
+    } .addShutdownHook {
         println("Shutting down")
     }
 }

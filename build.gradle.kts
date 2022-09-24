@@ -3,11 +3,12 @@ val kotlin_version: String by project
 
 plugins {
     application
-    kotlin("multiplatform") version "1.6.20-RC"
+    kotlin("multiplatform")
+    id("com.github.ben-manes.versions").version("0.42.0")
 }
 
 application {
-    mainClass.set("com.example.ApplicationKt")
+    mainClass.set("MainKt")
 }
 
 val kotlinCoroutinesVersion: String by project
@@ -17,13 +18,13 @@ repositories {
     mavenLocal()
     mavenCentral()
     maven { url = uri("https://maven.pkg.jetbrains.space/public/p/ktor/eap") }
-//    maven { //Provide your git credentials here to access library
-//        url = uri("https://maven.pkg.github.com/LimeBeck/ko-te")
-//        credentials {
-//            username = "limebeck"
-//            password = "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"
-//        }
-//    }
+    maven { //Provide your git credentials here to access library
+        url = uri("https://maven.pkg.github.com/LimeBeck/ko-te")
+        credentials {
+            username = "limebeck"
+            password = "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"
+        }
+    }
 }
 
 kotlin {
@@ -47,7 +48,7 @@ kotlin {
         val nativeMain by getting {
             dependencies {
                 implementation("com.squareup.okio:okio:$okioVersion")
-                implementation("dev.limebeck:ko-te:1.0-SNAPSHOT")
+                implementation("dev.limebeck:ko-te:0.2.0")
                 implementation("io.ktor:ktor-server-core:$ktor_version")
                 implementation("io.ktor:ktor-server-resources:$ktor_version")
                 implementation("io.ktor:ktor-server-status-pages:$ktor_version")

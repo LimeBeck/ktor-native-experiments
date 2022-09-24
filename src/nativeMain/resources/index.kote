@@ -1,0 +1,10 @@
+<html>
+    <head>
+    </head>
+    <body>
+        <div>Hello, there</div>
+        <pre><code>{{ kote() }}</code></pre>
+        {{ import "chunk.kote" }}
+        {{ import "chunk.kote" }}
+    </body>
+</html>
